@@ -12,13 +12,13 @@ for line in content:
     if len(line) == 0:
         #sum1 += sum(n > 0 for n in answers) # joli mais ca cree une liste?
         #sum2 += sum(n == gaulois for n in answers) # joli mais ca cree une liste?
-		for n in answers:
-			if n > 0:
-				sum1 += 1
-			if n == gaulois:
-				sum2 += 1
+        for i, n in enumerate(answers):
+            if n > 0:
+                sum1 += 1
+                if n == gaulois:
+                    sum2 += 1
+                answers[i] = 0
         gaulois = 0
-        answers = [0] * 26
     else:
         gaulois += 1
         for c in line:
