@@ -6,6 +6,7 @@ class Bag:
         self.name = name
         self.parents = {} # key:name, value:bag
         self.children = {} # key:name, value:(bag, count)
+        self.visited = False
 
 bags = {} # key:name, value:bag
 for line in content:
@@ -38,13 +39,11 @@ for line in content:
             break
         child_entry_start = child_entry_end + 2
 
-visited_bags = {} # key:bag, value:bool
 def GetParents(bag):
-    global visited_bags
-    visited_bags[bag] = True
+    bag.visited = True
     total = 1
     for parent_bag in bag.parents.values():
-        if not visited_bags.get(parent_bag):
+        if not parent_bag.visited:
             total += GetParents(parent_bag)
     return total
 
