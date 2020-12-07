@@ -1,34 +1,26 @@
-from copy import copy
-
-map = {}
 with open("d1.txt", "r") as f:
-    for s in f.read().splitlines():
-        map[int(s)] = True
+    content = [int(s) for s in f.read().splitlines()]
 
-def PartOne(map):
-    for n in map.keys():
+numbers = [False] * 2020
+for n in content:
+    numbers[n] = True
+
+def PartOne():
+    for n in content:
         diff = 2020 - n
-        if map.get(diff) != None:
+        if diff > 0 and numbers[diff]:
             print("Bon gaulois 1:", n * diff)
             return
 
-def PartTwo(map):
-    nit = iter(map)
-    while True:
-        try:
-            n = next(nit)
-            mit = copy(nit)
-            while True:
-                try:
-                    m = next(mit)
-                    diff = 2020 - (n + m)
-                    if map.get(diff) != None:
-                        print("Bon gaulois 2:", n * m * diff)
-                        return
-                except StopIteration:
-                    break
-        except StopIteration:
-            break
+def PartTwo():
+    i = 0
+    for n in content[:-1]:
+        i += 1
+        for m in content[i:]:
+            diff = 2020 - (n + m)
+            if diff > 0 and numbers[diff]:
+                print("Bon gaulois 2:", n * m * diff)
+                return
 
-PartOne(map)
-PartTwo(map)
+PartOne()
+PartTwo()
