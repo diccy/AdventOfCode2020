@@ -9,30 +9,34 @@ class Bag:
 
 bags = {} # key:name, value:bag
 for line in content:
-    bag_name_end = line.find(" bags")
+    line_length = len(line)
+    bag_name_end = line.find(" bags", 0, line_length)
     current_bag_name = line[:bag_name_end]
     current_bag = bags.get(current_bag_name)
     if current_bag == None:
         current_bag = Bag(current_bag_name)
         bags[current_bag_name] = current_bag
-    bag_name_start = bag_name_end + 14 # add " bags contain " length
-    children_entries = line[bag_name_start:].split(", ")
-    if len(children_entries) == 1 and children_entries[0][0] == 'n':
-        pass # "no other bags."
-    else:
-        for child_entry in children_entries:
-            child_entry_length = len(child_entry)
-            child_count_end = child_entry.find(" ", 0, child_entry_length)
-            child_count = int(child_entry[:child_count_end])
-            child_count_end += 1
-            child_bag_name_end = child_entry.find(" bag", child_count_end, child_entry_length)
-            child_bag_name = child_entry[child_count_end:child_bag_name_end]
-            child_bag = bags.get(child_bag_name)
-            if child_bag == None:
-                child_bag = Bag(child_bag_name)
-                bags[child_bag_name] = child_bag
-            child_bag.parents[current_bag_name] = current_bag
-            current_bag.children[child_bag_name] = (child_bag, child_count)
+    child_entry_start = bag_name_end + 14 # add " bags contain " length
+    while True:
+        child_entry_end = line.find(", ", child_entry_start, line_length)
+        child_entry = line[child_entry_start:child_entry_end]
+        if child_entry[0] == 'n':
+            break # "no other bags."
+        child_entry_length = len(child_entry)
+        child_count_end = child_entry.find(" ", 0, child_entry_length)
+        child_count = int(child_entry[:child_count_end])
+        child_count_end += 1
+        child_bag_name_end = child_entry.find(" bag", child_count_end, child_entry_length)
+        child_bag_name = child_entry[child_count_end:child_bag_name_end]
+        child_bag = bags.get(child_bag_name)
+        if child_bag == None:
+            child_bag = Bag(child_bag_name)
+            bags[child_bag_name] = child_bag
+        child_bag.parents[current_bag_name] = current_bag
+        current_bag.children[child_bag_name] = (child_bag, child_count)
+        if child_entry_end == -1:
+            break
+        child_entry_start = child_entry_end + 2
 
 visited_bags = {} # key:bag, value:bool
 def GetParents(bag):
