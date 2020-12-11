@@ -31,44 +31,35 @@ def InitSeatsFromContent():
             x +=1
         y += 1
 
+dirs = ((-1,-1), ( 0,-1), ( 1,-1),
+        (-1, 0),          ( 1, 0),
+        (-1, 1), ( 0, 1), ( 1, 1))
 def OccupiedNeighboursCount1(x0, y0, i):
-    occupied_neighbours = 0
-    xmin = max(x0 - 1, 0)
-    xmax = min(x0 + 1, w - 1)
-    y    = max(y0 - 1, 0)
-    ymax = min(y0 + 1, h - 1)
-    while y <= ymax:
-        x = xmin
-        while x <= xmax:
-            if not (x == x0 and y == y0):
-                if seats[x, y, i] == S_OCCUPIED:
-                    occupied_neighbours += 1
-            x += 1
-        y += 1
-    return occupied_neighbours
+    count = 0
+    for dir in dirs:
+        x = x0 + dir[0]
+        y = y0 + dir[1]
+        if 0 <= x and x < w and 0 <= y and y < h:
+            if seats[x, y, i] == S_OCCUPIED:
+                count += 1
+    return count
 
 def OccupiedNeighboursCount2(x0, y0, i):
-    occupied_neighbours = 0
-    dy = -1
-    while dy <= 1:
-        dx = -1
-        while dx <= 1:
-            if not (dx == 0 and dy == 0):
-                x, y = x0, y0
-                while True:
-                    x += dx
-                    y += dy
-                    if 0 <= x and x < w and 0 <= y and y < h:
-                        state = seats[x, y, i]
-                        if state != S_EMPTY:
-                            if state == S_OCCUPIED:
-                                occupied_neighbours += 1
-                            break
-                    else:
-                        break
-            dx += 1
-        dy += 1
-    return occupied_neighbours
+    count = 0
+    for dir in dirs:
+        x, y = x0, y0
+        while True:
+            x += dir[0]
+            y += dir[1]
+            if 0 <= x and x < w and 0 <= y and y < h:
+                state = seats[x, y, i]
+                if state != S_EMPTY:
+                    if state == S_OCCUPIED:
+                        count += 1
+                    break
+            else:
+                break
+    return count
 
 def Resolve(part):
     print("Part", part, "...")
