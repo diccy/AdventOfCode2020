@@ -61,14 +61,13 @@ if coprimes:
     mult = 1
     for bi in buses:
         mult *= bi[0]
-    print("mult:", mult)
 
     x = 0
     for bi in buses:
-        n_ = mult // bi[0]
-        d, u, v = ExtendedEuclidean2(n_, bi[0])
-        x += (bi[0] - bi[1]) * (u % bi[0]) * n_
-        print("n:", bi[0],"n_:", n_, "d:", d, (n_ * u) + (bi[0] * v),"u:", u, "v:", v,"e:", (u % bi[0]) * n_)
+        a = bi[0]
+        n = mult // a
+        _, u, _ = ExtendedEuclidean(n, a)
+        x += (a - bi[1]) * (u % a) * n
     x = x % mult
 
     print("Timestamp gaulois 2:", x)
