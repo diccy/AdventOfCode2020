@@ -28,10 +28,10 @@ DIRS_SWITCH = {
 for line in content:
     dir_char = line[0]
     value = int(line[1:])
-    op = DIRS_SWITCH.get(ord(dir_char))(value)
-    dir = DIRS[op[0]]
-    ship_pos[0] += dir[0] * op[1]
-    ship_pos[1] += dir[1] * op[1]
+    dir_id, factor = DIRS_SWITCH.get(ord(dir_char))(value)
+    dir = DIRS[dir_id]
+    ship_pos[0] += dir[0] * factor
+    ship_pos[1] += dir[1] * factor
 
 print("Distance gauloise 1:", abs(ship_pos[0]) + abs(ship_pos[1]))
 
@@ -41,17 +41,17 @@ print("Distance gauloise 1:", abs(ship_pos[0]) + abs(ship_pos[1]))
 ship_pos = [0, 0]
 wp_pos = [10, 1]
 
-def MoveShip(n):
-    ship_pos[0] += wp_pos[0] * n
-    ship_pos[1] += wp_pos[1] * n
+def MoveShip(factor):
+    ship_pos[0] += wp_pos[0] * factor
+    ship_pos[1] += wp_pos[1] * factor
 
-def MoveWaypoint(dir, n):
-    wp_pos[0] += dir[0] * n
-    wp_pos[1] += dir[1] * n
+def MoveWaypoint(dir, factor):
+    wp_pos[0] += dir[0] * factor
+    wp_pos[1] += dir[1] * factor
 
-def RotateWaypoint(n):
+def RotateWaypoint(degrees):
     rotate = lambda a, b, i: ((a, b), (b, -a), (-a, -b), (-b, a))[i]
-    wp_pos[0], wp_pos[1] = rotate(wp_pos[0], wp_pos[1], (4 + (n // 90)) % 4)
+    wp_pos[0], wp_pos[1] = rotate(wp_pos[0], wp_pos[1], (4 + (degrees // 90)) % 4)
 
 ACTIONS_SWITCH = {
     ord('E'): lambda n: MoveWaypoint(DIRS[0], n),
