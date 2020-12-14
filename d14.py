@@ -1,29 +1,27 @@
+from time import time
+from math import log2
+
 with open("d14.txt", "r") as f:
     content = f.read().splitlines()
 
 memory1 = {}
 memory2 = {}
-mask_0 = 0 # set 0
-mask_1 = 0 # set 1
-mask_X = 0 # set X
-mask_X_count = 0 # X count
+mask_0, mask_1, mask_X = 0, 0, 0
+list_X = []
 for line in content:
     if line[:2] == 'ma':
-        mask_0 = 0
-        mask_1 = 0
-        mask_X = 0
-        mask_X_count = 0
+        mask_0, mask_1, mask_X = 0, 0, 0
+        list_X = []
         i = 0
         while i < 36:
-            m = 1 << (35 - i)
             c = line[7+i]
             if c == '0':
-                mask_0 |= m
+                mask_0 |= 1 << (35 - i)
             elif c == '1':
-                mask_1 |= m
+                mask_1 |= 1 << (35 - i)
             else:
-                mask_X |= m
-                mask_X_count += 1
+                mask_X |= 1 << (35 - i)
+                list_X.insert(0, 35 - i)
             i += 1
     else:
         end_mem = line.find(']', 4)
@@ -37,20 +35,16 @@ for line in content:
             memory2[mem2] = val
         else:
             i = 0
-            count = 2 ** mask_X_count
+            count = 2 ** len(list_X)
             while i < count:
-                i_copy = i
-                mask_X_copy = mask_X
-                j = 0
                 val_X = 0
-                while mask_X_copy > 0:
-                    if (mask_X_copy & 1) == 1:
-                        val_X |= (i_copy & 1) << j
-                        i_copy >>= 1
-                    mask_X_copy >>= 1
-                    j += 1
-                masked_mem = val_X | (mem2 & (~mask_X))
-                memory2[masked_mem] = val
+                j = i
+                while j > 0:
+                    b = int(log2(j & -j))
+                    val_X |= 1 << list_X[b]
+                    j &= ~(1 << b)
+                mem2 = val_X | (mem2 & (~mask_X))
+                memory2[mem2] = val
                 i += 1
 
 print("Somme gauloise 1:", sum(memory1.values()))
