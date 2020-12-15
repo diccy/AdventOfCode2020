@@ -1,58 +1,67 @@
-with open("d9.txt", "r") as f:
-    content = [int(s) for s in f.read().splitlines()]
 
-bad_roman = 0
+def Resolve(do_print = False):
 
-# Part one
+    with open('d9.txt', 'r') as f:
+        content = [int(s) for s in f.read().splitlines()]
 
-# This solution totally fails at not using the same number twice,
-# and is fucked up if there is 2 or more different entries with the same
-# value, erasing all of them when doing dic.pop(nmp).
+    br = 0
 
-P = 25
-tab = [0] * P
-dic = {}
+    # Part one
 
-i = 0
-for n in content:
-    if i >= P:
-        sum = None
-        j = 0
-        while j < P:
-            m = tab[j]
-            if dic.get(n - m):
-                sum = (j, m)
+    # This solution totally fails at not using the same number twice,
+    # and is fucked up if there is 2 or more different entries with the same
+    # value, erasing all of them when doing dic.pop(nmp).
+
+    P = 25
+    tab = [0] * P
+    dic = {}
+
+    for i, n in enumerate(content):
+        if i >= P:
+            sum = None
+            for j in range(P):
+                m = tab[j]
+                if dic.get(n - m):
+                    sum = (j, m)
+                    break
+            if sum == None:
+                br = n
                 break
-            j += 1
-        if sum == None:
-            bad_roman = n
-            print("Mauvais romain 1:", bad_roman)
-            break
-        nmp = tab[i % P]
-        dic.pop(nmp)
-    tab[i % P] = n
-    dic[n] = True
-    i += 1
+            nmp = tab[i % P]
+            dic.pop(nmp)
+        tab[i % P] = n
+        dic[n] = True
 
 
-# Part two
+    # Part two
 
-l = len(content)
-i = 0
-j = 1
-sum = content[i] + content[j]
-while j < l:
-    if sum < bad_roman:
-        j += 1
-        sum += content[j]
-    elif sum > bad_roman:
-        if i == j - 1:
+    l = len(content)
+    i = 0
+    j = 1
+    sum = content[i] + content[j]
+    bg = 0
+    while j < l:
+        if sum < br:
             j += 1
             sum += content[j]
-        sum -= content[i]
-        i += 1
-    if sum == bad_roman:
-        min = min(content[i:j+1])
-        max = max(content[i:j+1])
-        print("Bon gaulois 2:", min + max)
-        break
+        elif sum > br:
+            if i == j - 1:
+                j += 1
+                sum += content[j]
+            sum -= content[i]
+            i += 1
+        if sum == br:
+            bg = min(content[i:j+1]) + max(content[i:j+1])
+            break
+
+    if do_print:
+        print('Mauvais romain 1:', br)
+        print('Bon gaulois 2:', bg)
+
+
+# #############################################################################
+if __name__ == '__main__':
+    Resolve(True)
+    # Results with given input:
+    #   1: 1124361034
+    #   2: 129444555
