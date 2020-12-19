@@ -23,9 +23,8 @@ def Resolve(do_print = False):
             o = ord(c)
             if o == ORD_P or o == ORD_M:
                 op, p = (OP_P, prio[0]) if o == ORD_P else (OP_M, prio[1])
-                if len(ops) > 0:
-                    while len(ops) > 0 and ops[-1][1] >= p:
-                        values.append(ops.pop()[0](values.pop(), values.pop()))
+                while len(ops) > 0 and ops[-1][1] >= p:
+                    values.append(ops.pop()[0](values.pop(), values.pop()))
                 ops.append((op, p))
             elif o == ORD_PO:
                 ops.append((ORD_PO, 0))
