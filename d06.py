@@ -1,7 +1,7 @@
 
 def Resolve(do_print = False):
 
-    with open('d6.txt', 'r') as f:
+    with open('d06.txt', 'r') as f:
         content = f.read().splitlines()
     content.append('')
 

@@ -1,7 +1,7 @@
 
 def Resolve(do_print = False):
 
-    with open('d3.txt', 'r') as f:
+    with open('d03.txt', 'r') as f:
         content = f.read().splitlines()
 
     w = len(content[0])

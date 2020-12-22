@@ -1,7 +1,7 @@
 
 def Resolve(do_print = False):
 
-    with open('d1.txt', 'r') as f:
+    with open('d01.txt', 'r') as f:
         content = [int(s) for s in f.read().splitlines()]
 
     numbers = [False] * 2020

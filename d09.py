@@ -1,7 +1,7 @@
 
 def Resolve(do_print = False):
 
-    with open('d9.txt', 'r') as f:
+    with open('d09.txt', 'r') as f:
         content = [int(s) for s in f.read().splitlines()]
 
     br = 0

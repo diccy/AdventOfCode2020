@@ -1,7 +1,7 @@
 
 def Resolve(do_print = False):
 
-    with open('d2.txt', 'r') as f:
+    with open('d02.txt', 'r') as f:
         content = f.read().splitlines()
 
     bg1 = 0

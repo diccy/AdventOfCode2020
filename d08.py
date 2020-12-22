@@ -1,7 +1,7 @@
 
 def Resolve(do_print = False):
 
-    with open('d8.txt', 'r') as f:
+    with open('d08.txt', 'r') as f:
         content = f.read().splitlines()
 
     l = len(content)
