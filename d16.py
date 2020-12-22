@@ -17,9 +17,9 @@ def Resolve(do_print = False):
         else:
             content_offset = i
             break
-    
+
     fields_count = len(fields)
-    
+
     my_ticket = [int(s) for s in content[content_offset+2].split(',')]
 
     tickets = []
@@ -42,7 +42,7 @@ def Resolve(do_print = False):
                 break
         if is_ticket_valid:
             valid_tickets.append(ticket)
-    
+
     a = np.ones((fields_count, fields_count), dtype=np.uint8)
     for ticket in valid_tickets:
         for i, value in enumerate(ticket):
