@@ -12,11 +12,11 @@ def Resolve(do_print = False):
 
     min_wait = timestamp
     min_bus = -1
-    for bi in buses:
-        wait = bi[0] - (timestamp % bi[0])
+    for bus, _ in buses:
+        wait = bus - (timestamp % bus)
         if wait < min_wait:
             min_wait = wait
-            min_bus = bi[0]
+            min_bus = bus
 
     bg1 = min_wait * min_bus
 
@@ -34,24 +34,26 @@ def Resolve(do_print = False):
     # ...
     # x == (buses[n][0] - buses[n][1]) (mod buses[n][0])
 
-    def GCD(a, b):
-        return a if b == 0 else GCD(b, a % b)
-
     # Assert coprimes
-    i = 0
-    l = len(buses)
+
     coprimes = True
-    while i < l - 1:
-        j = i + 1
-        while j < l:
-            if GCD(buses[i][0], buses[j][0]) != 1:
-                coprimes = False
-                tg2 = 'Error'
-                if do_print:
-                    print('Entree pas tres gauloise 2:', buses[i][0], 'et', buses[j][0], 'ne sont pas premiers entre eux!')
-                break
-            j += 1
-        i += 1
+
+    #def GCD(a, b):
+    #    return a if b == 0 else GCD(b, a % b)
+
+    #i = 0
+    #l = len(buses)
+    #while i < l - 1:
+    #    j = i + 1
+    #    while j < l:
+    #        if GCD(buses[i][0], buses[j][0]) != 1:
+    #            coprimes = False
+    #            tg2 = 'Error'
+    #            if do_print:
+    #                print('Entree pas tres gauloise 2:', buses[i][0], 'et', buses[j][0], 'ne sont pas premiers entre eux!')
+    #            break
+    #        j += 1
+    #    i += 1
 
     if coprimes:
 
@@ -64,15 +66,14 @@ def Resolve(do_print = False):
             return (d, u, v)
 
         mult = 1
-        for bi in buses:
-            mult *= bi[0]
+        for bus, _ in buses:
+            mult *= bus
 
         x = 0
-        for bi in buses:
-            a = bi[0]
-            n = mult // a
-            _, u, _ = ExtendedEuclidean(n, a)
-            x += (a - bi[1]) * (u % a) * n
+        for bus, i in buses:
+            n = mult // bus
+            _, u, _ = ExtendedEuclidean(n, bus)
+            x += (bus - i) * (u % bus) * n
         tg2 = x % mult
 
 

@@ -2,15 +2,15 @@
 def Resolve(do_print = False):
 
     with open('d12.txt', 'r') as f:
-        content = f.read().splitlines()
+        content = [(ord(line[0]), int(line[1:])) for line in f.read().splitlines()]
 
     #        East    South    West     North
-    DIRS = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+    DIRS = ((1, 0), (0, -1), (-1, 0), (0, 1))
 
     # Part 1
 
     ship_dir_id = 0
-    ship_pos = [0, 0]
+    shipx, shipy = 0, 0
 
     def RotateShipDir(n):
         nonlocal ship_dir_id
@@ -27,50 +27,50 @@ def Resolve(do_print = False):
         ord('L'): lambda n: (RotateShipDir(-n), 0),
     }
 
-    for line in content:
-        dir_char = line[0]
-        value = int(line[1:])
-        dir_id, factor = DIRS_SWITCH.get(ord(dir_char))(value)
-        dir = DIRS[dir_id]
-        ship_pos[0] += dir[0] * factor
-        ship_pos[1] += dir[1] * factor
+    for c, n in content:
+        dir_id, factor = DIRS_SWITCH.get(c)(n)
+        dx, dy = DIRS[dir_id]
+        shipx += dx * factor
+        shipy += dy * factor
 
-    dg1 = abs(ship_pos[0]) + abs(ship_pos[1])
+    dg1 = abs(shipx) + abs(shipy)
 
 
     # Part 2
 
-    ship_pos = [0, 0]
-    wp_pos = [10, 1]
+    shipx, shipy = 0, 0
+    wpx, wpy = 10, 1
+
+    Rotate = lambda a, b, d: ((a, b), (b, -a), (-a, -b), (-b, a))[(d // 90) % 4]
 
     def MoveShip(factor):
-        ship_pos[0] += wp_pos[0] * factor
-        ship_pos[1] += wp_pos[1] * factor
+        nonlocal shipx, shipy
+        shipx += wpx * factor
+        shipy += wpy * factor
 
-    def MoveWaypoint(dir, factor):
-        wp_pos[0] += dir[0] * factor
-        wp_pos[1] += dir[1] * factor
+    def MoveWaypoint(dx, dy, factor):
+        nonlocal wpx, wpy
+        wpx += dx * factor
+        wpy += dy * factor
 
     def RotateWaypoint(degrees):
-        rotate = lambda a, b, i: ((a, b), (b, -a), (-a, -b), (-b, a))[i]
-        wp_pos[0], wp_pos[1] = rotate(wp_pos[0], wp_pos[1], (4 + (degrees // 90)) % 4)
+        nonlocal wpx, wpy
+        wpx, wpy = Rotate(wpx, wpy, degrees)
 
     ACTIONS_SWITCH = {
-        ord('E'): lambda n: MoveWaypoint(DIRS[0], n),
-        ord('S'): lambda n: MoveWaypoint(DIRS[1], n),
-        ord('W'): lambda n: MoveWaypoint(DIRS[2], n),
-        ord('N'): lambda n: MoveWaypoint(DIRS[3], n),
+        ord('E'): lambda n: MoveWaypoint(1, 0, n),
+        ord('S'): lambda n: MoveWaypoint(0, -1, n),
+        ord('W'): lambda n: MoveWaypoint(-1, 0, n),
+        ord('N'): lambda n: MoveWaypoint(0, 1, n),
         ord('F'): lambda n: MoveShip(n),
         ord('R'): lambda n: RotateWaypoint( n),
         ord('L'): lambda n: RotateWaypoint(-n),
     }
 
-    for line in content:
-        dir_char = line[0]
-        value = int(line[1:])
-        ACTIONS_SWITCH.get(ord(dir_char))(value)
+    for c, n in content:
+        ACTIONS_SWITCH.get(c)(n)
 
-    dg2 = abs(ship_pos[0]) + abs(ship_pos[1])
+    dg2 = abs(shipx) + abs(shipy)
 
 
     if do_print:

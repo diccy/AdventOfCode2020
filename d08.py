@@ -1,11 +1,6 @@
 
 def Resolve(do_print = False):
 
-    with open('d08.txt', 'r') as f:
-        content = f.read().splitlines()
-
-    l = len(content)
-
     I_ACC = 0
     I_JMP = 1
     I_NOP = 2
@@ -15,6 +10,11 @@ def Resolve(do_print = False):
         'nop': I_NOP,
     }
 
+    with open('d08.txt', 'r') as f:
+        content = [(INSTRUCTIONS.get(line[:3]), int(line[3:])) for line in f.read().splitlines()]
+
+    l = len(content)
+
     # Part 1
 
     ran = [False] * l
@@ -23,9 +23,7 @@ def Resolve(do_print = False):
     while i < l:
         if ran[i]:
             break
-        line = content[i]
-        instruction = INSTRUCTIONS.get(line[:3])
-        n = int(line[3:])
+        instruction, n = content[i]
         ran[i] = True
         if instruction == I_ACC:
             acc1 += n
@@ -38,21 +36,17 @@ def Resolve(do_print = False):
     # Part 2
 
     ran = [False] * l
-    track = []
     change = -1
     i = 0
     acc2 = 0
 
-    def ApplyInstruction(id, do, sign):
-        nonlocal ran
+    def ApplyInstruction(iid, do, sign):
         nonlocal i
         nonlocal acc2
-        line = content[id]
-        instruction = INSTRUCTIONS.get(line[:3])
-        if id == change:
+        instruction, n = content[iid]
+        if iid == change:
             instruction = I_JMP if instruction == I_NOP else I_NOP
-        n = int(line[3:])
-        ran[id] = do
+        ran[iid] = do
         if instruction == I_ACC:
             acc2 = acc2 + n * sign
             i += sign
@@ -60,29 +54,23 @@ def Resolve(do_print = False):
             i += n * sign
         elif instruction == I_NOP:
             i += sign
-        return (id, instruction)
+        return instruction
 
-    def DoInstruction():
-        nonlocal track
-        track.append(i)
-        ApplyInstruction(i, True, 1)
-
-    def UndoInstruction():
-        id = track.pop()
-        return ApplyInstruction(id, False, -1)
-
+    track = []
     while i < l:
         if ran[i]:
             if change != -1:
                 while i != change:
-                    UndoInstruction()
-                UndoInstruction()
+                    ApplyInstruction(track.pop(), False, -1)
+                ApplyInstruction(track.pop(), False, -1)
             while len(track) > 0:
-                id, instruction = UndoInstruction()
+                iid = track.pop()
+                instruction = ApplyInstruction(iid, False, -1)
                 if instruction == I_JMP or instruction == I_NOP:
-                    change = id
+                    change = iid
                     break
-        DoInstruction()
+        track.append(i)
+        ApplyInstruction(i, True, 1)
 
     if do_print:
         print('Accumulator gaulois 1:', acc1)

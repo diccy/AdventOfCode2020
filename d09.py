@@ -4,7 +4,7 @@ def Resolve(do_print = False):
     with open('d09.txt', 'r') as f:
         content = [int(s) for s in f.read().splitlines()]
 
-    br = 0
+    bad_roman = 0
 
     # Part one
 
@@ -21,11 +21,11 @@ def Resolve(do_print = False):
             sum = None
             for j in range(P):
                 m = tab[j]
-                if dic.get(n - m):
+                if n - m in dic:
                     sum = (j, m)
                     break
             if sum == None:
-                br = n
+                bad_roman = n
                 break
             nmp = tab[i % P]
             dic.pop(nmp)
@@ -39,24 +39,24 @@ def Resolve(do_print = False):
     i = 0
     j = 1
     sum = content[i] + content[j]
-    bg = 0
+    bon_gaulois = 0
     while j < l:
-        if sum < br:
+        if sum < bad_roman:
             j += 1
             sum += content[j]
-        elif sum > br:
+        elif sum > bad_roman:
             if i == j - 1:
                 j += 1
                 sum += content[j]
             sum -= content[i]
             i += 1
-        if sum == br:
-            bg = min(content[i:j+1]) + max(content[i:j+1])
+        if sum == bad_roman:
+            bon_gaulois = min(content[i:j+1]) + max(content[i:j+1])
             break
 
     if do_print:
-        print('Mauvais romain 1:', br)
-        print('Bon gaulois 2:', bg)
+        print('Mauvais romain 1:', bad_roman)
+        print('Bon gaulois 2:', bon_gaulois)
 
 
 # #############################################################################

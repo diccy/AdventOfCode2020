@@ -9,18 +9,17 @@ def Resolve(do_print = False):
     for line in content:
         s = line.split(' ')
         numbers = s[0].split('-')
-        min = int(numbers[0])
-        max = int(numbers[1])
+        n_min = int(numbers[0])
+        n_max = int(numbers[1])
         letter = s[1][0]
-        pwrd = s[2]
         letter_count = 0
         letter_found = 0
-        for i, c in enumerate(pwrd):
+        for i, c in enumerate(s[2]):
             if c == letter:
                 letter_count += 1
-                if i + 1 == min or i + 1 == max:
+                if i + 1 == n_min or i + 1 == n_max:
                     letter_found += 1
-        if min <= letter_count and letter_count <= max:
+        if n_min <= letter_count and letter_count <= n_max:
             bg1 += 1
         if letter_found == 1:
             bg2 += 1

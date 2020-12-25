@@ -1,53 +1,45 @@
-import numpy
+import numpy as np
 
 def Resolve(do_print = False):
-
-    with open('d11.txt', 'r') as f:
-        content = f.read().splitlines()
 
     S_EMPTY = ord('.')
     S_FREE = ord('L')
     S_OCCUPIED = ord('#')
-    STATES = {
-        ord('.'): S_EMPTY,
-        ord('L'): S_FREE,
-        ord('#'): S_OCCUPIED,
-    }
 
-    DIRS = ((-1,-1), ( 0,-1), ( 1,-1),
-            (-1, 0),          ( 1, 0),
-            (-1, 1), ( 0, 1), ( 1, 1))
+    DIRS = ((-1,-1), (0,-1), ( 1,-1),
+            (-1, 0),         ( 1, 0),
+            (-1, 1), (0, 1), ( 1, 1))
+
+    with open('d11.txt', 'r') as f:
+        content = f.read().splitlines()
 
     w = len(content[0])
     h = len(content)
 
-    seats = None
+    content_seats = np.zeros((w, h, 2), dtype=int)
+    for y, line in enumerate(content):
+        for x, c in enumerate(line):
+            state = ord(c)
+            content_seats[x, y] = (state, state)
 
-    def InitSeatsFromContent():
-        nonlocal seats
-        seats = numpy.zeros((w, h, 2), dtype=int)
-        for y, line in enumerate(content):
-            for x, c in enumerate(line):
-                state = STATES.get(ord(c))
-                seats[x, y] = (state, state)
+    seats = None
 
     def OccupiedNeighboursCount1(x0, y0, i):
         count = 0
-        for dir in DIRS:
-            x = x0 + dir[0]
-            y = y0 + dir[1]
-            if 0 <= x and x < w and 0 <= y and y < h:
-                if seats[x, y, i] == S_OCCUPIED:
-                    count += 1
+        for dx, dy in DIRS:
+            x = x0 + dx
+            y = y0 + dy
+            if 0 <= x and x < w and 0 <= y and y < h and seats[x, y, i] == S_OCCUPIED:
+                count += 1
         return count
 
     def OccupiedNeighboursCount2(x0, y0, i):
         count = 0
-        for dir in DIRS:
+        for dx, dy in DIRS:
             x, y = x0, y0
             while True:
-                x += dir[0]
-                y += dir[1]
+                x += dx
+                y += dy
                 if 0 <= x and x < w and 0 <= y and y < h:
                     state = seats[x, y, i]
                     if state != S_EMPTY:
@@ -64,8 +56,6 @@ def Resolve(do_print = False):
         osf = (4, 5)[part-1]
         # occupied neighbours count function
         onc = (OccupiedNeighboursCount1, OccupiedNeighboursCount2)[part-1]
-
-        InitSeatsFromContent()
 
         n = 0 # next overall state id
         p = 1 # previous overall state id
@@ -95,7 +85,9 @@ def Resolve(do_print = False):
         if do_print:
             print(f'Sieges gaulois {part}: {occupied_seats}')
 
+    seats = content_seats.copy()
     Part(1)
+    seats = content_seats
     Part(2)
 
 
